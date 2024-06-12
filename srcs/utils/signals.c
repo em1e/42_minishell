@@ -1,34 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vkettune <vkettune@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/25 08:11:58 by vkettune          #+#    #+#             */
-/*   Updated: 2024/06/08 09:20:32 by vkettune         ###   ########.fr       */
+/*   Created: 2024/05/22 08:33:27 by vkettune          #+#    #+#             */
+/*   Updated: 2024/06/08 17:17:11 by vkettune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-int	ft_atoi(const char *s)
+void	set_signals(void)
 {
-	int	is_neg;
-	int	res;
-	int	i;
+	struct sigaction sig_act;
 
-	i = 0;
-	res = 0;
-	while (s[i] == '\f' || s[i] == '\t' || s[i] == ' '
-		|| s[i] == '\n' || s[i] == '\r' || s[i] == '\v' )
-		i++;
-	is_neg = 1;
-	if (s[i] == '-')
-		is_neg *= -1;
-	if (s[i] == '+' || s[i] == '-')
-		i++;
-	while (s[i] != '\0' && ft_isdigit(s[i]))
-		res = (res * 10) + s[i++] - '0';
-	return (res * is_neg);
+	sig_act.sa_handler = &signal_handler;
+	sigaction(SIGINT, &sig_act, NULL);
+}
+
+void	signal_handler(int signo)
+{
+	if (signo == SIGINT)
+	{
+		ft_printf("\n");
+		rl_on_new_line();
+		rl_redisplay();
+	}
 }

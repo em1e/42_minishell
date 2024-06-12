@@ -1,34 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   error_handling.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vkettune <vkettune@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/25 08:11:58 by vkettune          #+#    #+#             */
-/*   Updated: 2024/06/08 09:20:32 by vkettune         ###   ########.fr       */
+/*   Created: 2024/06/08 18:24:33 by vkettune          #+#    #+#             */
+/*   Updated: 2024/06/12 15:10:58 by vkettune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-int	ft_atoi(const char *s)
+void	cmd_error(char *cmd, char *arg, char *msg)
 {
-	int	is_neg;
-	int	res;
-	int	i;
+	char *error_msg;
+	char *temp;
+	(void)msg;
 
-	i = 0;
-	res = 0;
-	while (s[i] == '\f' || s[i] == '\t' || s[i] == ' '
-		|| s[i] == '\n' || s[i] == '\r' || s[i] == '\v' )
-		i++;
-	is_neg = 1;
-	if (s[i] == '-')
-		is_neg *= -1;
-	if (s[i] == '+' || s[i] == '-')
-		i++;
-	while (s[i] != '\0' && ft_isdigit(s[i]))
-		res = (res * 10) + s[i++] - '0';
-	return (res * is_neg);
+	temp = ft_strjoin("minishell: ", cmd);
+	error_msg = ft_strjoin(temp, ": ");
+	free(temp);
+	if (arg != NULL)
+	{
+		temp = ft_strjoin(error_msg, arg);
+		free(error_msg);
+		error_msg = temp;
+	}
+	perror(error_msg);
+	free(error_msg);
 }
