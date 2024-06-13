@@ -6,7 +6,7 @@
 /*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 15:08:14 by vkettune          #+#    #+#             */
-/*   Updated: 2024/06/13 10:21:19 by araveala         ###   ########.fr       */
+/*   Updated: 2024/06/13 14:15:01 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	to_home(t_data *data, t_env *envs)
 {
 	find_passage(data, "HOME", 2);
+	
 	if (chdir(data->tmp->filename) == 0)
 	{
 		data->path = getcwd(NULL, 0);
