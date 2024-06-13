@@ -6,7 +6,7 @@
 /*   By: vkettune <vkettune@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 12:56:39 by vkettune          #+#    #+#             */
-/*   Updated: 2024/06/13 14:32:46 by vkettune         ###   ########.fr       */
+/*   Updated: 2024/06/13 15:41:19 by vkettune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ char	*find_value(char *arg);
 char	*find_keys_value(t_env *envs, char *key);
 void	replace_value(t_data *data, char *key, char *new_value);
 int		check_dir(char *str);
+int	free_extra_return_function(char *str, int ret_value);
 
 int	insert_node(t_env **env_lst, char *key_name, char *value);
 // char *fill_old_pwd(t_data *data, t_env *env, char *temp_path);

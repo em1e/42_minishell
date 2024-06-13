@@ -6,7 +6,7 @@
 /*   By: vkettune <vkettune@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 15:08:14 by vkettune          #+#    #+#             */
-/*   Updated: 2024/06/13 14:38:45 by vkettune         ###   ########.fr       */
+/*   Updated: 2024/06/13 15:58:45 by vkettune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void	ft_cd(t_data *data, t_env *envs)
 	free(temp2);
 	change_dir(data, envs, temp);
 	free(data->path);
+	free(temp);
 }
 
 int	check_dir(char *str)

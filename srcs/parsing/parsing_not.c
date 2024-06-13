@@ -56,6 +56,7 @@ int	find_passage(t_data *all, char *string, int divert) // check if command is n
 		return (-1);
 	}
 	strlen = ft_strlen(string);
+	ft_printf("str= %s\n", string);
 	if (find_node(all->env, string, all) == 1 && all->tmp->env_line != NULL)
 	{
 		path_found = check_path(all->tmp->env_line, divert, all);
@@ -141,6 +142,6 @@ int	check_path(char *string, int divert, t_data *all)
 		}
 		i++;
 	}
-	collective_free(all->tmp->env_line, suffix, all->tmp->array);
+	collective_free(NULL, suffix, all->tmp->array);
 	return (0);
 }
