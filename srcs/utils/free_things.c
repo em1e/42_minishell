@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_things.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkettune <vkettune@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 10:59:15 by araveala          #+#    #+#             */
-/*   Updated: 2024/06/11 09:04:30 by vkettune         ###   ########.fr       */
+/*   Updated: 2024/06/13 13:41:15 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,16 @@ void	free_string(char *string)
 		string = NULL;
 	}
 }
-
+void	collective_free(char *str1, char *str2, char **array)
+{
+	if (array != NULL)
+		free_array(array);
+	if (str1 != NULL)
+		free_string(str1);
+	if (str2 != NULL)
+		free_string(str2);
+	
+}
 void	free_nodes(t_env *node)
 {
 	t_env *tmp;

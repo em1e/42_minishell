@@ -66,6 +66,7 @@ int	find_passage(t_data *all, char *string, int divert) // check if command is n
 	if (path_found == 0)
 	{
 		printf("command not found\n");
+//		free_string(all->tmp->env_line);
 		return (-1);
 	}
 	return (1);
@@ -81,6 +82,7 @@ static void	set_array(t_data *data)// char *flag, char *arguments)
 
 static void	split_diversion(t_data *data, int divert, char *string)
 {
+//	free_array(data->tmp->array);
 	if (divert == 1) // PATH
 		data->tmp->array = ft_split(string, ':');
 	else if (divert == 2) // HOME
@@ -117,6 +119,7 @@ int	check_path(char *string, int divert, t_data *all)
 		if (check_dir(all->tmp->array[i]) == 0)
 		{
 			free_string(suffix);
+//			free_array(all->tmp->array);
 			return (-1);
 		}
 		if (check_dir(all->tmp->array[i]) == 1)
@@ -127,6 +130,7 @@ int	check_path(char *string, int divert, t_data *all)
 			{
 				// printf("string = key we looking for aka HOME\n\n"); // remove
 				all->tmp->filename = all->tmp->array[i];
+				free_array(all->tmp->array);
 				free_string(suffix);
 				closedir(dir);
 				return (1);
@@ -155,8 +159,9 @@ int	check_path(char *string, int divert, t_data *all)
 		}
 		i++;
 	}
-	free_string(all->tmp->env_line);
-	free_array(all->tmp->array);
-	free_string(suffix); // this fixes "/cmd" leak
+	collective_free(all->tmp->env_line, suffix, all->tmp->array);
+	// free_string(all->tmp->env_line);
+	// free_array(all->tmp->array);
+	 //free_string(suffix); // this fixes "/cmd" leak
 	return (0);
 }

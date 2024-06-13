@@ -6,7 +6,7 @@
 /*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 12:56:39 by vkettune          #+#    #+#             */
-/*   Updated: 2024/06/13 10:20:54 by araveala         ###   ########.fr       */
+/*   Updated: 2024/06/13 13:43:15 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ t_env	*init(t_data *data);
 // env.c
 // t_env	*lst_env(void);
 t_env	*move_list(t_env *envs, char *key);
-void	free_nodes(t_env *nodes);
+// void	free_nodes(t_env *nodes);
 int		error(char *cmd, char *error);
 int		find_node(t_env *envs, char *key, t_data *data);
 
@@ -126,6 +126,7 @@ int		check_path(char *string, int divert, t_data *all);
 int		find_passage(t_data *all, char *string, int divert);
 void	free_array(char **array);
 void	free_string(char *string);
+void	collective_free(char *str1, char*str2, char **array);
 char	**ft_split_adv(char const*s, char c);
 char	*find_key_from_envs(t_env *envs, char *key);
 size_t	total_words_c(char const *s, char c);
