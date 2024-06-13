@@ -38,28 +38,48 @@ void collect_cmd_array(t_tokens *tokens, char *string)
 	i = 0;
 	mini_parser(tokens, i, x);
 }
-
-int	find_passage(t_data *all, char *string, int divert) // check if command is not a built in command
+int	null_check(char *str1, t_env *str2, char *str3)
 {
-	int strlen;
+	if (str1 == NULL)
+	{
+		ft_printf("ENVS KEY NULL \n");
+		return (0);
+	}
+	if (str2 == NULL)
+	{
+		ft_printf("ENVS IS NULL\n");
+		return (0);
+	}
+	if (str3 == NULL)
+	{
+		ft_printf("STRING IS NULL"); // may not need this check, sofar alwasy hardcoded
+		return (-1);
+	}
+	else
+		return (1);
+}
+int	find_passage(t_data *all, char *string, int divert)
+{
 	int path_found;
 
 	path_found = 0;
-	if (all->env->key == NULL || all->env == NULL)
-	{
-		printf("ENVS NULL OHO \n");
-		return (0);
-	}
-	if (string  == NULL)
-	{
-		printf("STRING OR CMD  NULL OHO \n");
+	if(null_check(all->env->key, all->env, string) != 1)
 		return (-1);
-	}
-	strlen = ft_strlen(string);
 	if (find_node(all->env, string, all) == 1 && all->tmp->env_line != NULL)
 	{
-		path_found = check_path(all->tmp->env_line, divert, all);
-		free_string(all->tmp->env_line);
+		if (divert == 2)
+		{
+			if (check_dir(all->tmp->env_line) == 0)
+				return (free_extra_return_function(all->tmp->env_line, -1));
+			else
+				all->tmp->filename = ft_strdup(all->tmp->env_line);
+			return (free_extra_return_function(all->tmp->env_line, 1));
+		}
+		else
+		{
+			path_found = check_path(all->tmp->env_line, divert, all);
+			free_string(all->tmp->env_line);
+		}
 	}
 	if (path_found == 0)
 	{
@@ -101,27 +121,20 @@ int	check_path(char *string, int divert, t_data *all)
 	i = 0;
 	cmd_len = ft_strlen(all->tokens->args[0]);
 	suffix = ft_strjoin("/", all->tokens->args[0]);
-
 	if (suffix == NULL || cmd_len == 0)
 		return (free_extra_return_function(suffix, 0));
 	split_diversion(all, divert, string);
 	while (all->tmp->array[i] != NULL)
-	{
-		if (check_dir(all->tmp->array[i]) == 0)
-			return (free_extra_return_function(suffix, -1));
+	{		
+//		if (check_dir(all->tmp->array[i]) == 0)
+//			return (free_extra_return_function(suffix, -1));
 		if (check_dir(all->tmp->array[i]) == 1)
 		{
 			dir = opendir(all->tmp->array[i]);
 			dp = readdir(dir);
-			if (divert == 2)
-			{
-				all->tmp->filename = ft_strdup(all->tmp->array[i]);
-				collective_free(NULL, suffix, all->tmp->array);
-				closedir(dir);
-				return (1);
-			}
 			while (dp != NULL)
 			{
+				//if (access(, X_OK) == 0)
 				if (ft_strncmp(dp->d_name, all->tokens->args[0], cmd_len) == 0 && ft_strlen(dp->d_name) == cmd_len)
 				{			
 					all->tmp->filename = ft_strjoin(all->tmp->array[i], suffix);
@@ -133,14 +146,16 @@ int	check_path(char *string, int divert, t_data *all)
 						closedir(dir);
 						return (1);
 					}
-					return (1);
+					return (-1);
 				}
 				dp = readdir(dir);
 			}
 			closedir(dir);
 		}
+		else
+			return (free_extra_return_function(suffix, -1));
 		i++;
 	}
-	collective_free(all->tmp->env_line, suffix, all->tmp->array);
+	collective_free(NULL, suffix, all->tmp->array);
 	return (0);
 }

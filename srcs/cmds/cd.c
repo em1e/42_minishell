@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkettune <vkettune@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 15:08:14 by vkettune          #+#    #+#             */
-/*   Updated: 2024/06/13 14:38:45 by vkettune         ###   ########.fr       */
+/*   Updated: 2024/06/13 18:02:02 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ void	ft_cd(t_data *data, t_env *envs)
 	temp2 = ft_strdup(data->tokens->args[1]);
 	temp = ft_strjoin(data->path, temp2);
 	free(temp2);
-
 	change_dir(data, envs, temp);
 	free(data->path);
 }

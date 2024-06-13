@@ -89,7 +89,7 @@ int check_dir(char *str);
 
 int	insert_node(t_env **env_lst, char *key_name, char *value);
 // char *fill_old_pwd(t_data *data, t_env *env, char *temp_path);
-t_env *fill_pwd_and_oldpwd(t_data *data, t_env *env, char *temp_path);
+t_env *fill_old_pwd(t_data *data, t_env *env, char *temp_path);
 
 // OLD STUFF
 
@@ -105,6 +105,8 @@ void	set_signals(void);
 t_env	*init(t_data *data);
 
 // env.c
+//free things
+int		free_extra_return_function(char *str, int ret_val);
 // t_env	*lst_env(void);
 t_env	*move_list(t_env *envs, char *key);
 void	free_nodes(t_env *nodes);
