@@ -6,7 +6,7 @@
 /*   By: vkettune <vkettune@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 12:56:39 by vkettune          #+#    #+#             */
-/*   Updated: 2024/06/13 15:41:19 by vkettune         ###   ########.fr       */
+/*   Updated: 2024/06/14 12:36:03 by vkettune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,8 @@ t_env	*init(t_data *data);
 void	minishell(t_data *data);
 void	cmd_error(char *cmd, char *arg);
 t_env	*call_env_error(char *cmd, char *arg);
+char	*variable_expansions_rl2(t_data *data, t_env *envs, char *rl);
+int is_pipe_or_redirect(char *arg);
 
 t_env	*create_env_list(void);
 int		call_cmd_error(char *cmd, char *arg, int ret_value);

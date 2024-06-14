@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: vkettune <vkettune@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 12:56:31 by vkettune          #+#    #+#             */
-/*   Updated: 2024/06/13 09:16:53 by araveala         ###   ########.fr       */
+/*   Updated: 2024/06/14 09:00:57 by vkettune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 void	minishell(t_data *data)
 {
 	char	*rl;
-
+	char *new_rl;
+	
 	while (1)
 	{
 		set_signals();
@@ -24,16 +25,20 @@ void	minishell(t_data *data)
 		add_history(rl);
 		if (rl)
 		{
-			collect_cmd_array(data->tokens, rl);
+			// ft_printf("minishell rl[0]: %s\n", rl[0]);
+			new_rl = variable_expansions_rl2(data, data->env, rl);
+			free(rl);
+			ft_printf("Got here!\n");
+			collect_cmd_array(data->tokens, new_rl);
 			// if (data->tokens->args[0] == NULL)
 			// 	break ;
-			if (handle_line(*data, *data->env, data->tokens, rl) == -1)
+			if (handle_line(*data, *data->env, data->tokens, new_rl) == -1)
 			{
 				ft_printf("error\n");
 				break ;
 			}
 			free_array(data->tokens->args);
-			free(rl);
+			free(new_rl);
 		}
 		if (!rl)
 			break ;

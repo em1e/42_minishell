@@ -6,7 +6,7 @@
 #    By: vkettune <vkettune@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/21 12:56:28 by vkettune          #+#    #+#              #
-#    Updated: 2024/06/12 17:30:58 by araveala         ###   ########.fr        #
+#    Updated: 2024/06/14 08:19:19 by vkettune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,7 +41,7 @@ SRCS_DIR = srcs/
 
 CMD_FILES = exit.c pwd.c export.c cd.c echo.c env.c #unset.c
 
-ENV_FILES = find_from_env.c list_manipulation.c #list_creation.c
+ENV_FILES = find_from_env.c list_manipulation.c variable_expressions.c #list_creation.c
 
 PAR_FILES = export_parsing.c parsers.c parsing_not.c #parse.c parse_utils.c export_parse.c
 
