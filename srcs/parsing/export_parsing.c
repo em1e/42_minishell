@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_parsing.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkettune <vkettune@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 10:57:49 by araveala          #+#    #+#             */
-/*   Updated: 2024/06/06 18:37:18 by vkettune         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:01:36 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	check_char(t_data *data, int i, int x)
 	if (x == -1)
 	{
 		printf("minishell : not a valid identifier (no exit plan yet)\n");
-		return (1);
+		return (-1);
 	}
 	character = data->tokens->args[i][x];
 	// printf("char = %c\n", character);
@@ -28,7 +28,7 @@ int	check_char(t_data *data, int i, int x)
 		// or <<
 		// could return number value for handling
 		printf("handle < \n");
-		return (2);
+		return (1);
 	}
 	if (character == '>')
 	{
@@ -37,16 +37,15 @@ int	check_char(t_data *data, int i, int x)
 		printf("handle > \n");
 		return (2);
 	}
-	if (character == '$' && ft_strchr(data->tokens->args[i], '=') == NULL)
+	if (character == '$')
 	{
-		printf("does some declare -x stuff, may not need to handle the same as org shell\n");
-		return (2);
+		ft_printf("handle $\n");
+		return (3);
 	}
-	// here we can add && and || they do some wierd shit ...*does nothing here
 	if (ft_isalpha(character) == 0 && character != '_')
 	{
 		printf("minishell : not a valid identifier (no exit plan yet)\n");
-		return (1);
+		return (-1);
 	}
 	else
 		return (0);

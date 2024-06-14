@@ -58,9 +58,10 @@ int	null_check(char *str1, t_env *str2, char *str3)
 	else
 		return (1);
 }
-int	find_passage(t_data *all, char *string, int divert)
+int	find_passage(t_data *all, char *cmd, char *string, int divert)
 {
 	int path_found;
+	(void)cmd;
 
 	path_found = 0;
 	if(null_check(all->env->key, all->env, string) != 1)
@@ -77,15 +78,12 @@ int	find_passage(t_data *all, char *string, int divert)
 		}
 		else
 		{
-			path_found = check_path(all->tmp->env_line, divert, all);
+			path_found = check_path(all->tmp->env_line, divert, all, cmd);
 			free_string(all->tmp->env_line);
 		}
 	}
 	if (path_found == 0)
-	{
-		printf("command not found\n");
 		return (-1);
-	}
 	return (1);
 }
 
@@ -109,44 +107,47 @@ static void	split_diversion(t_data *data, int divert, char *string)
 		// error
 	}
 }
+int	check_and_excute(t_data *all, char *str, char *cmd, char *suffix, int i)
+{
+	size_t cmd_len;
 
-int	check_path(char *string, int divert, t_data *all)
+	cmd_len = ft_strlen(cmd);
+	if (ft_strncmp(str, cmd, cmd_len) == 0 && ft_strlen(str) == cmd_len)
+	{
+		all->tmp->filename = ft_strjoin(all->tmp->array[i], suffix);
+		set_array(all); //, NULL, NULL, NULL);
+		if (simple_fork(all) == -1)
+			return (-1);
+		collective_free(all->tmp->filename, suffix, all->tmp->array); // do we need this data if so , no free yet
+		//closedir(dir);
+		return (1);
+	}
+	return (0);
+}
+int	check_path(char *string, int divert, t_data *all, char *cmd)
 {
 	struct dirent	*dp;
 	DIR				*dir; 
 	char			*suffix;
-	size_t			cmd_len;
 	int				i;
 
 	i = 0;
-	cmd_len = ft_strlen(all->tokens->args[0]);
-	suffix = ft_strjoin("/", all->tokens->args[0]);
-	if (suffix == NULL || cmd_len == 0)
+	suffix = ft_strjoin("/", cmd);
+	if (suffix == NULL || ft_strlen(cmd) == 0)
 		return (free_extra_return_function(suffix, 0));
 	split_diversion(all, divert, string);
-	while (all->tmp->array[i] != NULL)
+	while (all->tmp->array[i] != NULL && ++i)
 	{		
-//		if (check_dir(all->tmp->array[i]) == 0)
-//			return (free_extra_return_function(suffix, -1));
 		if (check_dir(all->tmp->array[i]) == 1)
 		{
 			dir = opendir(all->tmp->array[i]);
 			dp = readdir(dir);
 			while (dp != NULL)
 			{
-				//if (access(, X_OK) == 0)
-				if (ft_strncmp(dp->d_name, all->tokens->args[0], cmd_len) == 0 && ft_strlen(dp->d_name) == cmd_len)
-				{			
-					all->tmp->filename = ft_strjoin(all->tmp->array[i], suffix);
-					set_array(all); //, NULL, NULL, NULL);
-					if (simple_fork(all) == 0)
-					{
-						// if we need any of this data, we should not free yet
-						collective_free(all->tmp->filename, suffix, all->tmp->array);
-						closedir(dir);
-						return (1);
-					}
-					return (-1);
+				if (check_and_excute(all, dp->d_name, cmd, suffix, i) == 1) // 5 parameters
+				{
+					closedir(dir);
+					return (1);
 				}
 				dp = readdir(dir);
 			}
@@ -154,7 +155,6 @@ int	check_path(char *string, int divert, t_data *all)
 		}
 		else
 			return (free_extra_return_function(suffix, -1));
-		i++;
 	}
 	collective_free(NULL, suffix, all->tmp->array);
 	return (0);

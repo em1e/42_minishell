@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkettune <vkettune@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 12:56:39 by vkettune          #+#    #+#             */
-/*   Updated: 2024/06/13 14:32:46 by vkettune         ###   ########.fr       */
+/*   Updated: 2024/06/14 18:20:09 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	cmd_error(char *cmd, char *arg);
 t_env	*call_env_error(char *cmd, char *arg);
 
 t_env	*create_env_list(void);
-int		call_cmd_error(char *cmd, char *arg, int ret_value);
+int		call_cmd_error(char *cmd, char *arg, char *msg, int ret_value);
 void	collective_free(char *str1, char *str2, char **array);
 
 char	*find_key(char *str);
@@ -125,13 +125,14 @@ int		check_char(t_data *data, int i, int x);
 
 //test functions that may or may not be in need of renovation
 void	collect_cmd_array(t_tokens *tokens, char *string);
-int		check_path(char *string, int divert, t_data *all);
-int		find_passage(t_data *all, char *string, int divert);
+int		check_path(char *string, int divert, t_data *all, char *cmd);
+int		find_passage(t_data *all, char *cmd, char *string, int divert);
 void	free_array(char **array);
 void	free_string(char *string);
 char	**ft_split_adv(char const*s, char c);
 char	*find_key_from_envs(t_env *envs, char *key);
 size_t	total_words_c(char const *s, char c);
+int		check_and_excute(t_data *all, char *str, char *cmd, char *suffix, int i);
 
 // cmds.c
 int		ft_pwd(t_data *data, t_env *envs);

@@ -6,7 +6,7 @@
 /*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/25 08:17:55 by vkettune          #+#    #+#             */
-/*   Updated: 2024/06/13 09:54:16 by araveala         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:13:50 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,14 +79,14 @@ int	handle_line(t_data data, t_env envs, t_tokens *tokens, char *line)
 
 	i = 0;
 	data.tokens = tokens;
-	if (tokens->args[0] == NULL)
+	if (tokens->args[0] == NULL) // will we need to change [0] as new cmds will be located else where
 		return (0);
 	cmd = cmd_to_lower(tokens->args[0]);
 	// ft_printf("cmd: %s|\n", cmd); //remove
 	if (is_builtins(cmd) == 1)
 		exec_builtins(data, envs, line, cmd);
-	else if (find_passage(&data, "PATH", 1) == -1)
-		ft_printf("%s\n", line);
+	else if (find_passage(&data, cmd, "PATH", 1) == -1)
+		call_cmd_error(cmd, NULL, "command not found\n", -10);
 	free(cmd);
 	return (0);
 }
