@@ -6,7 +6,7 @@
 /*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 17:25:52 by araveala          #+#    #+#             */
-/*   Updated: 2024/07/12 15:10:33 by araveala         ###   ########.fr       */
+/*   Updated: 2024/07/25 17:28:50 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,95 @@ int	set_array(t_data *data, int x)
 	return (data->i);
 }
 
-static int update_i(t_data *data, int i)
+
+
+/// this works for 1 pipe just fine just switch back to orginal name below and uncomment
+// int pipe_fork(t_data *data, int i)
+int	child(t_data *data, int fds[2], int x)
+{
+	
+	pid_t child;
+	int status;
+
+	child = fork();
+	if (child == -1)
+	{
+		ft_printf("errror in first child perror\n");
+	}
+	if (child == 0)
+	{
+		if  (x % 2 == 0 || x >! data->tokens->pipe_count)
+			dup2(fds[1], STDOUT_FILENO);
+		else if (x >= data->tokens->pipe_count)
+			dup2(fds[0], STDIN_FILENO);			
+		close(fds[0]); // closing read end
+		close(fds[1]);
+		execve(data->tmp->filename, data->tmp->ex_arr, NULL);		
+		ft_printf("need perror here, exceve ffailed in piep fork\n");
+		exit(1);
+	}
+	waitpid(child, &status, 0);
+	close(fds[0]); // closing read end
+	close(fds[1]);
+	close(child);
+	return (0);
+}
+int pipe_fork(t_data *data)
+{
+	int fds[2];
+	int x;
+
+	x = 0;
+	if (pipe(fds) < 0)
+	{
+		ft_printf("error in pipe perror needed\n");
+		exit(EXIT_FAILURE);
+	}	
+	while (x <= data->tokens->pipe_count)
+	{
+		if (data->i > data->tokens->array_count)
+		{
+			ft_printf("we are somehow out of bounds \n");
+			return (-1);
+		}
+		if (check_path(data->tmp->env_line, 1, data, data->i) !=  -1)
+		{
+			set_array(data, data->i);
+			child(data, &fds[2], x);
+			if (data->tokens->args[data->i] != NULL && data->tokens->args[data->i][0] == '|')
+				data->i++;
+			//data->i = update_i(data, data->i - 1);//, x);  // - 1 is confusing , hunting requred
+		}
+		x++;
+	}
+	close(fds[0]);
+	close(fds[1]);	
+	return (0);
+}
+
+int	simple_fork(t_data *data)
+{
+	// int	ret;
+	int	status;
+	
+	data->pid = fork();
+	if (data->pid == -1)
+	{
+		ft_printf("fork error\n");
+		exit(1);
+	}
+	if (data->pid == 0)
+	{
+		if (execve(data->tmp->filename, data->tmp->ex_arr, NULL) == -1)
+		ft_printf("exceve fail\n");
+	}
+	waitpid(data->pid, &status, 0);
+	close(data->pid);
+	return (0);
+}
+
+//storing this incase i fuck up
+/*static int update_i(t_data *data, int i)
 {
 	int x;
 	
@@ -80,11 +168,9 @@ static int update_i(t_data *data, int i)
 		i--;
 	}
 	return (x);	
-}
+	}*/
 
-/// this works for 1 pipe just fine just switch back to orginal name below and uncomment
-// int pipe_fork(t_data *data, int i)
-int	children(t_data *data, int fds[2])
+/*int	children(t_data *data, int fds[2])
 {
 	
 //	int fds[2];
@@ -190,25 +276,4 @@ int pipe_fork(t_data *data, int i)
 		x++;
 	}
 	return (0);
-}
-
-int	simple_fork(t_data *data)
-{
-	// int	ret;
-	int	status;
-	
-	data->pid = fork();
-	if (data->pid == -1)
-	{
-		ft_printf("fork error\n");
-		exit(1);
-	}
-	if (data->pid == 0)
-	{
-		if (execve(data->tmp->filename, data->tmp->ex_arr, NULL) == -1)
-		ft_printf("exceve fail\n");
-	}
-	waitpid(data->pid, &status, 0);
-	close(data->pid);
-	return (0);
-}
+}*/

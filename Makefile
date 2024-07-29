@@ -6,7 +6,7 @@
 #    By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/21 12:56:28 by vkettune          #+#    #+#              #
-#    Updated: 2024/07/10 14:35:07 by araveala         ###   ########.fr        #
+#    Updated: 2024/07/25 17:15:25 by araveala         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,9 +27,9 @@ BLUE = \033[0;94m
 MAGENTA = \033[0;95m
 CYAN = \033[0;96m
 WHITE = \033[0;97m
-
+#-fsanitize=address
 NAME = minishell
-FLAGS = -Wall -Wextra -Werror -g -fsanitize=address $(HEADERS)
+FLAGS = -Wall -Wextra -Werror -g  $(HEADERS)
 HEADERS = -I ./incs/ # -I ~/.brew/opt/readline/include
 
 LIBS = $(READLINE) $(LIBFT)
