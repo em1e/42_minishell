@@ -6,7 +6,7 @@
 /*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 18:01:07 by araveala          #+#    #+#             */
-/*   Updated: 2024/09/12 17:35:28 by araveala         ###   ########.fr       */
+/*   Updated: 2024/09/13 11:28:08 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,6 +160,10 @@ int	dup_fds(t_data *data, int *fds, int x)
 		if (dup2(data->prev_fd, STDIN_FILENO) == -1)
 		{
 			perror("dup of prev failed\n");
+			close(fds[0]);//maybe
+			close(fds[1]);
+			if (data->prev_fd != -1)
+				close(data->prev_fd);
 			exit(1); //exit code
 		}
 	}
@@ -168,6 +172,10 @@ int	dup_fds(t_data *data, int *fds, int x)
 		if (dup2(fds[1], STDOUT_FILENO) == -1)
 		{
 			printf("dup of fds[1] failed\n"); // change error message
+			close(fds[0]);//maybe
+			close(fds[1]);
+			if (data->prev_fd != -1)
+				close(data->prev_fd);
 			exit(1); //exit code
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 17:25:52 by araveala          #+#    #+#             */
-/*   Updated: 2024/09/12 18:17:35 by araveala         ###   ########.fr       */
+/*   Updated: 2024/09/13 15:26:12 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,13 @@ int	child(t_data *data, int *fds, int x, int flag)
 	
 	tmp = NULL;
 	data->child[data->child_i] = fork();
+	//g_interactive_mode = 1;
 	if (data->child[data->child_i] == -1)
 		return (error("fork", "first child failed"));
 	if (data->child[data->child_i] == 0)
 	{
+		//close(3); // this closes valgrinds log.txt 
+		g_interactive_mode = data->child[data->child_i]; //eeep
 		dup_fds(data, fds, x);
 		if (data->tokens->action == true && redirect_helper(data->tokens, data->x) != 0)
 			exit(exit_code(0,0));
@@ -31,7 +34,8 @@ int	child(t_data *data, int *fds, int x, int flag)
 			exit(exit_code(0, 0));
 		}
 		tmp = set_env_array(data, 0, 0);
-		execve(data->tmp->filename, data->tmp->ex_arr, tmp);
+		reset_signals();
+		execve(data->tmp->filename, data->tmp->ex_arr, tmp);		
 		free_array(tmp); // MALLOCED VARIABLE
 		exit(exit_code(0, 0));
 	}
@@ -40,6 +44,8 @@ int	child(t_data *data, int *fds, int x, int flag)
 	if (data->prev_fd != -1)
 		close(data->prev_fd);
 	close(fds[1]);
+	//g_interactive_mode = 1;	
+	//close(3);  // this closes valgrinds log.txt 
 	return (0);
 }
 
@@ -121,6 +127,20 @@ static int wait_and_close(t_data *data, int status, int fds[2], int x)
 	return (0);
 }
 
+/*this error message FILE DESCRIPTORS: 3 open (3 std) at exit. 
+indicates that only the standard file descriptors (stdin, stdout, and stderr) are open when your program exits. 
+This means that there are no additional file descriptors left open,
+which is generally a good sign that your program is properly managing its resources.*/
+
+/*the defence text to help us understand and defend this 
+Standard File Descriptors: The three open file descriptors are the standard ones (stdin, stdout, stderr), 
+which are always open by default in any Unix-like system. These are necessary for basic input and output operations.
+
+No Resource Leaks: The fact that only the standard file descriptors are open at exit indicates that your program does not have any resource leaks. 
+All non-standard file descriptors have been properly closed.
+
+Expected Behavior: This is the expected behavior for a well-managed program. 
+Closing the standard file descriptors is not necessary and is typically handled by the operating system when the process terminates. */
 int	pipe_fork(t_data *data)
 {
 	int	fds[2];
@@ -140,8 +160,15 @@ int	pipe_fork(t_data *data)
 			exit(EXIT_FAILURE);
 		}
 		if (send_to_child(data, fds, x) == -1)
+		{
+			close(fds[1]);
+			close(fds[0]);
 			return (-1);
+		}
+		if (data->prev_fd != -1)
+			close(data->prev_fd);
 		data->prev_fd = fds[0];
+		close(fds[1]);
 		x++;
 	}
 	wait_and_close(data, status, fds, x);
