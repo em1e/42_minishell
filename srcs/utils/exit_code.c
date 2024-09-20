@@ -6,7 +6,7 @@
 /*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 08:40:21 by vkettune          #+#    #+#             */
-/*   Updated: 2024/09/20 13:04:00 by araveala         ###   ########.fr       */
+/*   Updated: 2024/09/20 18:20:30 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ void	free_n_exit(t_data *data, int *fds, int flag)
 	}
 	if (data->tokens->here_file != NULL)
 	{
+		dprintf(2, "weeeeee\n");
 	 	unlink(data->tokens->here_file);
 	 	data->tokens->here_file = free_string(data->tokens->here_file);
 		free_array(data->tokens->heredoc);

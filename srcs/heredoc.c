@@ -6,22 +6,14 @@
 /*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/05 04:44:39 by vkettune          #+#    #+#             */
-/*   Updated: 2024/09/20 15:08:55 by araveala         ###   ########.fr       */
+/*   Updated: 2024/09/20 18:11:37 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// if dupe fails we aren't closing fd's
 int	open_and_fill_heredoc(t_tokens *tokens)
-{//
-	//int	fd;
-	int	i;
-
-	i = 0;
-	//dprintf(2, "weeee\n");
-	//fd = open(tokens->here_file, O_RDWR);
-
+{
 	tokens->here_fd = open (tokens->here_file, O_RDONLY);
 	if (tokens->here_fd < 0)
 		return (error("heredoc", "Failed to open input file B"));
@@ -31,12 +23,6 @@ int	open_and_fill_heredoc(t_tokens *tokens)
 		return (error("heredoc", "Failed to duplicate fd"));
 	}
 	close(tokens->here_fd);
-	/*while (tokens->heredoc[i] != NULL)// && tokens->heredoc[i][0] != 'o')
-	{
-		//write(STDIN_FILENO, tokens->heredoc[i], ft_strlen(tokens->heredoc[i]));
-		printf("%s\n", tokens->heredoc[i]);
-		i++;
-	}*/
 	free_array(tokens->heredoc);
 	tokens->heredoc = NULL;
 	return (0);
@@ -83,36 +69,28 @@ char	**set_into_heredoc_array(t_data *data, char **heredoc, char *line)
 	else if (line != NULL)
 		new_heredoc[i] = ft_strjoin(line, "\n");
 	new_heredoc[i + 1] = NULL;
-	//free_array(data->tokens->heredoc);
-	//data->tokens->heredoc = NULL;
 	return (new_heredoc);
 }
 
 int	create_file(t_tokens *tokens)
 {
-	//int	fd;
 	int i;
 
 	i = 0;
 	tokens->here_fd = 0;
-	if (tokens->here_file == NULL)
-		printf("hered doc is null|\n");
 	if (tokens->here_file != NULL)
 		tokens->here_fd = open(tokens->here_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (tokens->here_fd < 0)
 		return (error("heredoc", "Failed to open input file A"));
-	while (tokens->heredoc[i] != NULL)// && tokens->heredoc[i][0] != 'o')
+	while (tokens->heredoc[i] != NULL)
 	{
 		write(tokens->here_fd, tokens->heredoc[i], ft_strlen(tokens->heredoc[i]));
 		i++;
-		//printf("%s\n", tokens->heredoc[i]);
-		
 	}
 	close(tokens->here_fd);
 	return (0);
-} //plop
+}
 
-// add tokens->h_action = true; in the beginning if heredocs stop working
 void	heredoc_loop(t_data *data, t_tokens *tokens, char *eof)
 {
 	char	*line;
@@ -138,5 +116,5 @@ void	heredoc_loop(t_data *data, t_tokens *tokens, char *eof)
 		tokens->heredoc = set_into_heredoc_array(data, tokens->heredoc, line);
 		free_string(line);
 	}
-	create_file(data->tokens); // plop
+	create_file(data->tokens);
 }

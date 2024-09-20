@@ -6,7 +6,7 @@
 /*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 18:01:07 by araveala          #+#    #+#             */
-/*   Updated: 2024/09/20 10:59:54 by araveala         ###   ########.fr       */
+/*   Updated: 2024/09/20 18:18:12 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,10 +109,7 @@ int	set_array(t_data *data)
 	i = 0;
 	args = data->tokens->args;
 	if (data->tmp->filename == NULL || args[data->i] == NULL)
-	{
-		// printf("set array is -1\n");
 		return (-1);
-	}
 	arg_count = count_args(data);
 	malloc_array(data, arg_count);
 	if (data->tmp->filename != NULL)

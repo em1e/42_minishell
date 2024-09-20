@@ -6,12 +6,29 @@
 /*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 17:25:52 by araveala          #+#    #+#             */
-/*   Updated: 2024/09/20 15:33:20 by araveala         ###   ########.fr       */
+/*   Updated: 2024/09/20 18:16:05 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+int open_infile(t_tokens *tokens)
+{
+	int fd;
+	
+	printf("check file = %s\n", tokens->input_file);
+	fd = open(tokens->input_file, O_RDONLY); 
+	if (fd < 0)
+		return (error("infile", "Failed to open input file B"));
+	if (dup2(fd, STDIN_FILENO) == -1)
+	{
+		close(fd);
+		return (error("infile", "Failed to duplicate fd"));
+	}
+	// free input file here maybe
+	close(fd);
+	return (0);
+}
 // delete temp file at the end of minishell loop
 // (or earlier e.g. end of forks, find place)
 int	child(t_data *data, int *fds, int x, int flag)
@@ -29,11 +46,10 @@ int	child(t_data *data, int *fds, int x, int flag)
 		if (data->tokens->action == true
 				&& redirect_helper(data->tokens, data->x) != 0)
 			free_n_exit(data, fds, 1);
-		if (data->tokens->h_action == true)
-		{
-			//dup(data->tokens->heredoc, STDIN_fILENO);
+		if (data->tokens->h_action == true)// && data->tokens->in_action == false)
 			open_and_fill_heredoc(data->tokens);
-		}
+		if (data->in_action)
+			open_infile(data->tokens);
 		if (flag == 1)
 		{
 			exec_builtins(*data, data->tokens->args[data->i], &data->env);
@@ -48,19 +64,12 @@ int	child(t_data *data, int *fds, int x, int flag)
 	}
 	data->tokens->h_action = false;
 	data->tokens->action = false;
+	data->in_action = false;
 	data->child_i++;
 	if (data->prev_fd != -1)
 		close(data->prev_fd);
 	close(fds[1]);
 	data->tmp->filename = free_string(data->tmp->filename);
-	/*if (data->tokens->here_file != NULL)
-	{
-	 	unlink(data->tokens->here_file);
-	 	data->tokens->here_file = free_string(data->tokens->here_file);
-		free_array(data->tokens->heredoc);
-		data->tokens->heredoc = NULL;
-
-	}*/
 	return (0);//exit_code(1, 0));
 }
 
@@ -95,63 +104,36 @@ int	set_builtin_info(t_data *data, int fds[2], int x)
 
 int	send_to_child_help(t_data *data, int fds[2], int x)
 {
-	char **args;
+	char	**args;
 
 	args = data->tokens->args;
 	set_array(data);
-	//printf("filename shoudl be cta %s\n", data->tmp->filename);
-	//print_arr(data->tmp->ex_arr, "arr");
 	child(data, fds, x, 0);
-	/*if (args[data->i] != NULL && is_redirect(args[data->i]) > 0)
-	{
-		data->i += 2;
-	}
-	else if (data->i == data->tokens->array_count)
+	if (data->i == data->tokens->array_count)
 		return (1);
-	if (args[data->i] != NULL && args[data->i][0] == '|')
-		data->i++;*/
 	return (0);
 }
-void set_bools(t_data *data, char *args)
+void	set_bools(t_data *data, char *args)
 {
-		if (is_redirect(args) == 3) //data->i == 0 &&
-		{
-			data->tokens->action = true;
-//			data->i += 2;
-		}
-		else if (is_redirect(args) == 2) //data->i == 0 &&
-		{
-			data->tokens->h_action = true;
-//			data->i += 2;
-		}
-		else if (is_redirect(args) == 1)
-		{
-			data->tokens->in_action = true;
-			 //data->i == 0 && 
-//			data->i += 2;
-		}
-		//if (is_redirect(args[data->i]) == 1)
-		//{
-			 //data->i == 0 && 
-//			data->i += 2;
-		//}
-		
+	if (is_redirect(args) == 3)
+		data->tokens->action = true;
+	else if (is_redirect(args) == 2)
+		data->tokens->h_action = true;
+	else if (is_redirect(args) == 1)
+		data->in_action = true;	
 }
 
 int	send_to_child(t_data *data, int fds[2], int x)
 {
 	char	**args;
-//	printf("what is x = %d\n", x);
+
 	args = data->tokens->args;
 	if (args[data->i] == NULL)
 		return (0);
-	//if ()
-	if (args[data->i] != NULL && is_char_redir(args[data->i][0]) > 0) //data->i == 0 &&
+	if (args[data->i] != NULL && is_redirect(args[data->i]) > 0)
 	{
-		printf("fuc args = |%s| and x = %d\n", args[data->i], x);
-		while(args[data->i] != NULL && args[data->i][0] != '|' && is_char_redir(args[data->i][0]) > 0)
+		while(args[data->i] != NULL && args[data->i][0] != '|' && is_redirect(args[data->i]) > 0)
 		{
-			printf("loop \n");
 			set_bools(data, args[data->i]);
 			data->i += 2;
 		}
