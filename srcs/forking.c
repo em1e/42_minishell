@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   forking.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkettune <vkettune@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 17:25:52 by araveala          #+#    #+#             */
-/*   Updated: 2024/09/20 09:50:25 by vkettune         ###   ########.fr       */
+/*   Updated: 2024/09/20 15:33:20 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,10 @@ int	child(t_data *data, int *fds, int x, int flag)
 				&& redirect_helper(data->tokens, data->x) != 0)
 			free_n_exit(data, fds, 1);
 		if (data->tokens->h_action == true)
+		{
+			//dup(data->tokens->heredoc, STDIN_fILENO);
 			open_and_fill_heredoc(data->tokens);
+		}
 		if (flag == 1)
 		{
 			exec_builtins(*data, data->tokens->args[data->i], &data->env);
@@ -50,6 +53,14 @@ int	child(t_data *data, int *fds, int x, int flag)
 		close(data->prev_fd);
 	close(fds[1]);
 	data->tmp->filename = free_string(data->tmp->filename);
+	/*if (data->tokens->here_file != NULL)
+	{
+	 	unlink(data->tokens->here_file);
+	 	data->tokens->here_file = free_string(data->tokens->here_file);
+		free_array(data->tokens->heredoc);
+		data->tokens->heredoc = NULL;
+
+	}*/
 	return (0);//exit_code(1, 0));
 }
 
@@ -88,47 +99,76 @@ int	send_to_child_help(t_data *data, int fds[2], int x)
 
 	args = data->tokens->args;
 	set_array(data);
+	//printf("filename shoudl be cta %s\n", data->tmp->filename);
+	//print_arr(data->tmp->ex_arr, "arr");
 	child(data, fds, x, 0);
-	if (data->i > 0 && args[data->i-1] != NULL && args[data->i-1][0] == '>')
-		data->i++;
-	else if (args[data->i] != NULL && args[data->i][0] == '>')
+	/*if (args[data->i] != NULL && is_redirect(args[data->i]) > 0)
+	{
 		data->i += 2;
+	}
 	else if (data->i == data->tokens->array_count)
 		return (1);
 	if (args[data->i] != NULL && args[data->i][0] == '|')
-		data->i++;
+		data->i++;*/
 	return (0);
+}
+void set_bools(t_data *data, char *args)
+{
+		if (is_redirect(args) == 3) //data->i == 0 &&
+		{
+			data->tokens->action = true;
+//			data->i += 2;
+		}
+		else if (is_redirect(args) == 2) //data->i == 0 &&
+		{
+			data->tokens->h_action = true;
+//			data->i += 2;
+		}
+		else if (is_redirect(args) == 1)
+		{
+			data->tokens->in_action = true;
+			 //data->i == 0 && 
+//			data->i += 2;
+		}
+		//if (is_redirect(args[data->i]) == 1)
+		//{
+			 //data->i == 0 && 
+//			data->i += 2;
+		//}
+		
 }
 
 int	send_to_child(t_data *data, int fds[2], int x)
 {
 	char	**args;
-
+//	printf("what is x = %d\n", x);
 	args = data->tokens->args;
 	if (args[data->i] == NULL)
 		return (0);
-	if (data->i == 0 && is_char_redir(args[data->i][0]) > 0)
+	//if ()
+	if (args[data->i] != NULL && is_char_redir(args[data->i][0]) > 0) //data->i == 0 &&
 	{
-		if (data->i == 0 && is_redirect(args[data->i]) == 3)
+		printf("fuc args = |%s| and x = %d\n", args[data->i], x);
+		while(args[data->i] != NULL && args[data->i][0] != '|' && is_char_redir(args[data->i][0]) > 0)
 		{
-			data->tokens->action = true;
+			printf("loop \n");
+			set_bools(data, args[data->i]);
 			data->i += 2;
 		}
-		else if (data->i == 0 && is_redirect(args[data->i]) == 1)
-			data->i += 2;
-		if (check_path(data->tmp->env_line, 1, data, data->i) == 0)
+		if (args[data->i] != NULL && check_path(data->tmp->env_line, 1, data, data->i) == 0)
 			return (-1);
 		if (send_to_child_help(data, fds, x) == 1)
 			return (0);
+		data->i++;
 	}
-	if (is_builtins(args[data->i]) == 1)
+	else if (is_builtins(args[data->i]) == 1)
 		set_builtin_info(data, fds, x);
-	else if (check_path(data->tmp->env_line, 1, data, data->i) != 0)
+	else if (args[data->i] != NULL && check_path(data->tmp->env_line, 1, data, data->i) != 0)
 	{
 		if (send_to_child_help(data, fds, x) == 1)
 			return (0);
 	}	
-	else
+	else if (args[data->i] != NULL)
 		return (-1);
 	return (0);
 }

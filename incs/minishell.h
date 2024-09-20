@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkettune <vkettune@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 12:56:39 by vkettune          #+#    #+#             */
-/*   Updated: 2024/09/20 09:49:05 by vkettune         ###   ########.fr       */
+/*   Updated: 2024/09/20 15:11:18 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ typedef struct s_tokens
 	char	**heredoc;
 	char	*here_file;
 	bool	here_check;
-
+	int		here_fd;
 	int		array_count;
 	int		pipe_count;
 	int		redirect_count;
@@ -58,8 +58,9 @@ typedef struct s_tokens
 	int		out_a_count;
 	int		in_a_count;
 	
-	bool	action;
+	bool	action; //out action
 	bool	h_action;
+	bool	in_action;
 	bool	redirect_in;
 	bool	redirect_out;
 	bool	redirect_append;

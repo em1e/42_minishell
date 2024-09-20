@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkettune <vkettune@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 12:56:31 by vkettune          #+#    #+#             */
-/*   Updated: 2024/09/19 13:52:57 by vkettune         ###   ########.fr       */
+/*   Updated: 2024/09/20 11:07:24 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	minishell(t_data *data)
 		}
 		rl = free_string(rl);
 		free_array(data->tokens->args);
-		free(data->tokens->heredoc);
+		//free(data->tokens->heredoc);
 		data->tokens->input_file = free_string(data->tokens->input_file);
 		free_array(data->tokens->output_files);
 		data->tokens->output_files = NULL;

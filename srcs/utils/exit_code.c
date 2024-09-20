@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit_code.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkettune <vkettune@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 08:40:21 by vkettune          #+#    #+#             */
-/*   Updated: 2024/09/19 13:35:32 by vkettune         ###   ########.fr       */
+/*   Updated: 2024/09/20 13:04:00 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,18 @@ void	free_n_exit(t_data *data, int *fds, int flag)
 	if (flag == 1 || flag == 0)
 	{
 		free_array(data->tokens->args);
+		//null
 		free_nodes(data->env);
 		free_array(data->tokens->output_files);
+		//null
+
 	}
-	// if (data->tokens->here_file != NULL)
-	// {
-	// 	unlink(data->tokens->here_file);
-	// 	data->tokens->here_file = free_string(data->tokens->here_file);
-	// }
+	if (data->tokens->here_file != NULL)
+	{
+	 	unlink(data->tokens->here_file);
+	 	data->tokens->here_file = free_string(data->tokens->here_file);
+		free_array(data->tokens->heredoc);
+		data->tokens->heredoc = NULL;
+	}
 	exit(exit_code(0, 0));
 }

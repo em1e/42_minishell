@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_get_next_line.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkettune <vkettune@student.42.fr>          +#+  +:+       +#+        */
+/*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/08 21:35:50 by vkettune          #+#    #+#             */
-/*   Updated: 2024/08/08 21:35:58 by vkettune         ###   ########.fr       */
+/*   Updated: 2024/09/20 11:16:14 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ char	*get_next_line(int fd)
 	}
 	if (ft_strlen(line) == 0)
 		return (free(line), NULL);
-
 	if (newline != NULL)
 	{
 		to_copy = newline - line + 1;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   string_loopers_3.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkettune <vkettune@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 23:16:46 by vkettune          #+#    #+#             */
-/*   Updated: 2024/09/20 07:37:50 by vkettune         ###   ########.fr       */
+/*   Updated: 2024/09/20 14:13:49 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ char	**set_env_array(t_data *data, int i, int x)
 // change error messages to perror, and change error func's
 int	dup_fds(t_data *data, int *fds, int x)
 {
-	if (data->tokens->array_count < 3)
-		return (0);
+	//if (data->tokens->array_count < 3)
+	//	return (0);
 	if (x > 0)
 	{
 		if (dup2(data->prev_fd, STDIN_FILENO) == -1)
@@ -68,6 +68,14 @@ int	dup_fds(t_data *data, int *fds, int x)
 	}
 	if (x < data->tokens->pipe_count)
 	{
+		/*if (data->tokens->h_action == true)
+		{
+			if (dup2(data->tokens->here_fd, STDIN_FILENO) == -1)
+			{	
+				free_n_exit(data, fds, 2);
+				printf("dup of fds[1] failed\n");
+			}	
+		}*/
 		if (dup2(fds[1], STDOUT_FILENO) == -1)
 		{
 			free_n_exit(data, fds, 2);
@@ -80,15 +88,3 @@ int	dup_fds(t_data *data, int *fds, int x)
 		close(data->prev_fd);
 	return (0);
 }
-
-// int	get_word_len(int *check, int *x)
-// {
-// 	int	word_len;
-
-// 	word_len = 0;
-// 	if (check > x)
-// 		word_len =  check - x;
-// 	else
-// 		word_len =  x - check;
-// 	return (word_len);
-// }

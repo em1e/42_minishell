@@ -6,7 +6,7 @@
 /*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 11:10:33 by araveala          #+#    #+#             */
-/*   Updated: 2024/09/20 09:43:53 by vkettune         ###   ########.fr       */
+/*   Updated: 2024/09/20 13:10:17 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,18 @@ int	fancy_strlen(char const *s, char c, int i)
 			fancy_loop(s, &i, '\'');
 		else if (is_char_redir(s[i]) > 0)
 		{
-			if (i == 0)
+			// if (i == 0)
+            while (s[i] && is_char_redir(s[i]) > 0)
+                i++;
+            return (i);
+			/*if (i == 0)
 			{
-				if (is_char_redir(s[i + 1]) > 0)
+				while (is_char_redir(s[i + 1]) > 0)
 					return (2);
 				else
 					return (1);
 			}
-			return (i);
+			return (i);*/
 		}
 		else if (i > 0 && s[i - 1] != 32 && s[i + 1]
 			&& s[i + 1] != 32 && s[i] == '|')
@@ -62,9 +66,14 @@ size_t	total_words_c(char const *s, char c)
 			stupid_if_statement(s, &i);
 		else if (is_char_redir(s[i]) > 0)
 		{
-			if (s[i + 1] && is_char_redir(s[i + 1]) > 0)
-				i++;
-			lol(&words, &i);
+			 i++;
+            while (s[i] && is_char_redir(s[i]) > 0)
+                i++;
+            if (s[i] && is_char_redir(s[i]) == 0)
+                words++;
+			//if (s[i + 1] && is_char_redir(s[i + 1]) > 0)
+			//	i++;
+			//lol(&words, &i);
 		}
 		else if (s[i] == '|')
 			lol(&words, &i);
@@ -133,21 +142,27 @@ char	**ft_split_adv(char const *s, char c, t_data *data)
 	x = 0;
 	if (s[0] == '|')
 		return (not_perror("syntax error", NULL, "unexpected token\n"), NULL);
-	total_words = total_words_c(s, c) + 1;
-	(void)data;
+	total_words = total_words_c(s, c);
+	//(void)data;
 	word_len = 0;
 	array = NULL;
 	if (!*s || !s)
 		return (NULL);
-	array = (char **)ft_calloc(sizeof(char *), total_words);
+	array = (char **)ft_calloc(sizeof(char *), total_words + 1);
 	if (!s || !array)
 		return (NULL);
-	if (total_words == 2)
+ 	if (total_words <= 2)
+    {
+        free_array(array);
+        array = ft_split(s, c);
+        return (array);
+    }
+	/*if (total_words == 2)
 	{
 		array[0] = ft_substr(s, 0, ft_strlen(s) + 1);
 		array[1] = NULL;
 		return (array);
-	}
+	}*/
 	array = adv_loop(array, s, total_words, data->tmp);
 	return (array);
 }
