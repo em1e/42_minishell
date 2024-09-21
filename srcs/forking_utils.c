@@ -6,7 +6,7 @@
 /*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 18:01:07 by araveala          #+#    #+#             */
-/*   Updated: 2024/09/20 18:18:12 by araveala         ###   ########.fr       */
+/*   Updated: 2024/09/21 19:26:06 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,15 @@ static int	fill_output_info(t_data *data, int i)
 		else
 		{
 			data->tmp->ex_arr[i] = data->tokens->output_files[data->x];
+			data->tokens->action = true;
 			data->i += 2;
 		}
 	}
 	else if (is_redirect(data->tokens->args[data->i]) == 2)
-		data->i += 2;
+	{
+		data->h_action = true;
+		data->i += 2;	
+	}
 	else
 	{
 		data->tmp->ex_arr[i] = NULL;

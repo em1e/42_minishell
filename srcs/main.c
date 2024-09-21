@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkettune <vkettune@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 12:56:31 by vkettune          #+#    #+#             */
-/*   Updated: 2024/09/21 06:50:42 by vkettune         ###   ########.fr       */
+/*   Updated: 2024/09/21 18:39:08 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	g_interactive_mode; // = 1 means we are in interactive mode
-
+//int	g_interactive_mode; // = 1 means we are in interactive mode
+volatile sig_atomic_t	g_interactive_mode;
 /**~~ added error handeling to collect_cmd_array returns 0 on success
  im not sure if this might be more helpfull when handleing exit codes, 
  this is to catch if no infile at the very begining, as our code now
@@ -26,8 +26,8 @@ void	minishell(t_data *data)
 
 	while (1)
 	{
+		//g_interactive_mode = 1;
 		set_signals();
-		g_interactive_mode = 1;
 		rl = readline(data->prompt);
 		add_history(rl);
 		if (!rl)

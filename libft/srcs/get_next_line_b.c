@@ -6,7 +6,7 @@
 /*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 14:07:32 by araveala          #+#    #+#             */
-/*   Updated: 2024/09/21 10:02:49 by araveala         ###   ########.fr       */
+/*   Updated: 2024/09/21 12:46:20 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,11 @@ char	*get_next_line(int fd)
 	while (BUFFER_SIZE > 0 && fd >= 0)
 	{
 		read_len = read(fd, buffer, BUFFER_SIZE);
+		if (read_len == -1)
+			return (NULL);
+			//read_len = read(fd, buffer, BUFFER_SIZE);
+		//if (read_len == -1)
+		//	return (NULL);
 		s_line = read_to_line(buffer, s_line, read_len);
 		if (s_line == NULL)
 			return (NULL);

@@ -6,7 +6,7 @@
 /*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/05 04:44:39 by vkettune          #+#    #+#             */
-/*   Updated: 2024/09/21 10:26:27 by araveala         ###   ########.fr       */
+/*   Updated: 2024/09/21 19:33:26 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,12 +82,13 @@ int	create_file(t_tokens *tokens)
 	int i;
 
 	i = 0;
+
 	tokens->here_fd = 0;
 	if (tokens->here_file != NULL)
 		tokens->here_fd = open(tokens->here_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (tokens->here_fd < 0)
 		return (error("heredoc", "Failed to open input file A"));
-	while (tokens->heredoc[i] != NULL)
+	while (tokens->heredoc != NULL && tokens->heredoc[i] != NULL)
 	{
 		write(tokens->here_fd, tokens->heredoc[i], ft_strlen(tokens->heredoc[i]));
 		i++;
@@ -104,17 +105,24 @@ void	heredoc_loop(t_data *data, t_tokens *tokens, char *eof)
 	fd = 0;
 	line = NULL;
 	tokens->here_file = ft_strdup("temp_heredoc_file_that_none_know_about");
+	signal(SIGINT, here_signal);	
 	while (1)
 	{
-		write(1, "> ", 2);
-		line = get_next_line(fd);
+		if (g_interactive_mode == 1)
+		{
+			g_interactive_mode = 0;
+			break ;
+		}
+		line = readline("hereboy> ");
 		if (line == NULL)
 			break ;
-		if (ft_strncmp(line, eof, ft_strlen(eof)) == 0
-			&& ft_strlen(eof) + 1 == ft_strlen(line))
+		if (ft_strlen (line) == ft_strlen (eof))
 		{
-			line = free_string(line);
-			break ;
+			if (ft_strncmp(line, eof, ft_strlen(eof)) == 0)
+			{
+				line = free_string(line);
+				break ;
+			}
 		}
 		tokens->heredoc = set_into_heredoc_array(data, tokens->heredoc, line);
 		line = free_string(line);

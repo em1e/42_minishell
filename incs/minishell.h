@@ -6,7 +6,7 @@
 /*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 12:56:39 by vkettune          #+#    #+#             */
-/*   Updated: 2024/09/21 10:59:21 by araveala         ###   ########.fr       */
+/*   Updated: 2024/09/21 16:10:45 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@
 # include <stdbool.h>
 
 # include "libft.h"
-extern int g_interactive_mode;
-
+//extern int g_interactive_mode;
+volatile extern sig_atomic_t	g_interactive_mode;;
 typedef struct s_env
 {
 	char			*key;
@@ -62,7 +62,7 @@ typedef struct s_tokens
 	int		in_a_count;
 	
 	bool	action;
-	bool	h_action;
+	//bool	h_action;
 	bool	in_action;
 	bool	redirect_in;
 	bool	redirect_out;
@@ -100,6 +100,7 @@ typedef struct s_data
 	char		*path;
 	bool		simple;
 	bool		in_action;
+	bool		h_action;
 }	t_data;
 
 // PARSING - - - - - - - - -
@@ -187,11 +188,14 @@ void	free_nodes(t_env *nodes);
 char	**free_loop(char **arr, int index);
 
 // signals
-void	signal_handler(int signo);
-void	set_signals(void);
+void	here_signal(int sig);
+void	signal_handler(int sig);
+void	set_signals();
 void	reset_signals(int signo);
 void	handle_sigquit(int signo);
 
+//void	dont_do_it(int signo);
+//void 	do_nothing(int sig);
 // ft_split_adv
 char	**ft_split_adv(char const*s, t_data *data);
 size_t	total_words_c(char const *s, char c);

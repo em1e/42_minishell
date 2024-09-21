@@ -3,60 +3,51 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkettune <vkettune@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/22 08:33:27 by vkettune          #+#    #+#             */
-/*   Updated: 2024/09/20 10:00:15 by vkettune         ###   ########.fr       */
+/*   Updated: 2024/09/21 19:13:03 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	set_signals(void)
-{
-	struct sigaction	sig_act;
-
-	sigemptyset(&sig_act.sa_mask);
-	sig_act.sa_flags = SA_RESTART;
-	sig_act.sa_handler = &signal_handler;
-	sigaction(SIGINT, &sig_act, NULL);
-	sig_act.sa_handler = SIG_IGN;
-	sigaction(SIGQUIT, &sig_act, NULL);
+void handle_sigint(int sig) {
+	(void)sig;
+	
+    g_interactive_mode = 1;
 }
 
-/*set to default*/
-void	handle_cc(int signo)
+void	here_signal(int sig)
 {
-	(void)signo;
-	signal(SIGINT, SIG_DFL);
-	kill(g_interactive_mode, SIGINT);
+  	g_interactive_mode = sig;
+	struct sigaction sa;
+	
+    sa.sa_handler = handle_sigint;
+    sa.sa_flags = 0;
+    sigemptyset(&sa.sa_mask);
+    sigaction(SIGINT, &sa, NULL);
 }
 
-void	handle_sigquit(int signo)
+void handle_sigquit(int signo)
 {
-	(void)signo;
-	write(STDOUT_FILENO, "Quit (core dumped because you asked it too)\n", 46);
-	signal(SIGQUIT, SIG_DFL);
-	kill(g_interactive_mode, SIGQUIT);
+    g_interactive_mode = signo;
+	signal(SIGQUIT, SIG_IGN);
+    write(STDOUT_FILENO, "Quit (core dumped because you asked it too)\n", 45);
 }
 
-void	reset_signals(int signo)
+void signal_handler(int signo)
 {
-	(void)signo;
-	signal(SIGINT, handle_cc);
-	signal(SIGQUIT, handle_sigquit);
+	g_interactive_mode = signo;
+    rl_replace_line("", 0);
+    printf("\n");
+    rl_on_new_line();
+    rl_redisplay();
 }
 
-void	signal_handler(int signo)
+void set_signals()
 {
-	if (signo == SIGINT)
-	{
-		if (g_interactive_mode == 1)
-		{
-			ft_printf("\n");
-			rl_replace_line("", 0);
-			rl_on_new_line();
-			rl_redisplay();
-		}
-	}
+    signal(SIGINT, signal_handler);
+    signal(SIGQUIT, SIG_IGN);
+
 }

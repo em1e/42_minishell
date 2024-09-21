@@ -6,7 +6,7 @@
 /*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 17:25:52 by araveala          #+#    #+#             */
-/*   Updated: 2024/09/21 11:33:13 by araveala         ###   ########.fr       */
+/*   Updated: 2024/09/21 19:28:18 by araveala         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,17 @@ int	child(t_data *data, int *fds, int x, int flag)
 		return (error("fork", "first child failed"));
 	if (data->child[data->child_i] == 0)
 	{
-		g_interactive_mode = data->child[data->child_i];
+		signal(SIGQUIT, SIG_DFL);
+		//g_interactive_mode = 0;
 		dup_fds(data, fds, x);
 		if (data->tokens->action == true
 				&& redirect_helper(data->tokens, data->x) != 0)
 			free_n_exit(data, fds, 1);
-		if (data->tokens->h_action == true)
+		if (data->h_action == true)
+		{
+			
 			open_and_fill_heredoc(data->tokens);
+		}
 		if (data->in_action)
 		{
 			open_infile(data->tokens);
@@ -69,13 +73,15 @@ int	child(t_data *data, int *fds, int x, int flag)
 			free_n_exit(data, fds, 1);
 		}
 		tmp = set_env_array(data, 0, 0);
-		reset_signals(0);
+		signal(SIGQUIT, SIG_DFL);
+		//reset_signals(0);
 		if (data->tmp->filename != NULL)
 			execve(data->tmp->filename, data->tmp->ex_arr, tmp);
 		free_array(tmp);
 		free_n_exit(data, fds, 1);
 	}
-	data->tokens->h_action = false;
+	signal(SIGQUIT, handle_sigquit);
+	data->h_action = false;
 	data->tokens->action = false;
 	data->in_action = false;
 	data->child_i++;
@@ -121,6 +127,11 @@ int	send_to_child_help(t_data *data, int fds[2], int x)
 
 	args = data->tokens->args;
 	set_array(data);
+	while(args[data->i] != NULL && args[data->i][0] != '|' && is_redirect(args[data->i]) > 0)
+	{
+		set_bools(data, args[data->i]);
+		data->i += 2;
+	}
 	child(data, fds, x, 0);
 	if (data->i == data->tokens->array_count)
 		return (1);
@@ -133,7 +144,9 @@ void	set_bools(t_data *data, char *args)
 	if (is_redirect(args) == 3)
 		data->tokens->action = true;
 	else if (is_redirect(args) == 2)
-		data->tokens->h_action = true;
+	{
+		data->h_action = true;
+	}
 	else if (is_redirect(args) == 1)
 		data->in_action = true;	
 }
