@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   forking.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: vkettune <vkettune@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 17:25:52 by araveala          #+#    #+#             */
-/*   Updated: 2024/09/20 18:16:05 by araveala         ###   ########.fr       */
+/*   Updated: 2024/09/21 07:44:58 by vkettune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,8 @@ int	send_to_child_help(t_data *data, int fds[2], int x)
 	child(data, fds, x, 0);
 	if (data->i == data->tokens->array_count)
 		return (1);
+	if (args[data->i] != NULL && args[data->i][0] == '|')
+		data->i++;
 	return (0);
 }
 void	set_bools(t_data *data, char *args)
@@ -137,6 +139,8 @@ int	send_to_child(t_data *data, int fds[2], int x)
 			set_bools(data, args[data->i]);
 			data->i += 2;
 		}
+		if (args[data->i] != NULL && args[data->i][0] == '|')
+			data->i++;
 		if (args[data->i] != NULL && check_path(data->tmp->env_line, 1, data, data->i) == 0)
 			return (-1);
 		if (send_to_child_help(data, fds, x) == 1)
@@ -173,6 +177,14 @@ static int	wait_and_close(t_data *data, int status, int fds[2], int x)
 	{
 		free(data->tmp->ex_arr);
 		data->tmp->ex_arr = NULL;
+	}
+	if (data->tokens->here_file != NULL)
+	{
+		dprintf(2, "waaaaaaa\n");
+	 	unlink(data->tokens->here_file);
+	 	data->tokens->here_file = free_string(data->tokens->here_file);
+		free_array(data->tokens->heredoc);
+		data->tokens->heredoc = NULL;
 	}
 	status = (status >> 8) & 0xFF;
 	exit_code(1, status);

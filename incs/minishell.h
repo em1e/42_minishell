@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araveala <araveala@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: vkettune <vkettune@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/21 12:56:39 by vkettune          #+#    #+#             */
-/*   Updated: 2024/09/20 18:19:29 by araveala         ###   ########.fr       */
+/*   Updated: 2024/09/21 07:09:59 by vkettune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ typedef struct s_tokens
 	int		out_a_count;
 	int		in_a_count;
 	
-	bool	action; //out action
+	bool	action;
 	bool	h_action;
 	bool	in_action;
 	bool	redirect_in;
@@ -192,7 +192,7 @@ void	reset_signals(int signo);
 void	handle_sigquit(int signo);
 
 // ft_split_adv
-char	**ft_split_adv(char const*s, char c, t_data *data);
+char	**ft_split_adv(char const*s, t_data *data);
 size_t	total_words_c(char const *s, char c);
 
 // string_loopers
