@@ -9,7 +9,7 @@ This project provides a hands-on way to explore how a shell processes input, int
 
 ***
 
-[Watch the video](https://github.com/em1e/em1e.github.io/raw/main/minishell_video.mp4)
+[![minishell demo](https://i.ytimg.com/vi/w-UHjiFiuXQ/hqdefault.jpg)](https://youtu.be/w-UHjiFiuXQ "minishell demo")
 
 ## Features
 
