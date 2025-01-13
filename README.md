@@ -3,7 +3,9 @@
 </h1>
 
 ## Description
-Minishell is a recreation of the popular Unix shell, `bash`, designed to help you understand how command-line interpreters work. With this shell, you can execute commands, handle piping (`|`), redirection (`>`), and environment variable management, mimicking the behavior of Bash. Additionally, it supports handling signals, handling `exit` commands, and more, making it a small but powerful shell.
+Minishell is a recreation of `bash`, designed to help you understand how command-line interpreters work. With this shell, you can execute commands, handle piping (`|`), redirection (`>`), and environment variable management, mimicking the behavior of Bash. Additionally, it supports handling signals, handling `exit` commands, and more, making it a small but powerful shell.
+
+
 
 This project provides a hands-on way to explore how a shell processes input, interprets commands, interacts with the operating system, and executes system calls.
 
