@@ -9,7 +9,7 @@ This project provides a hands-on way to explore how a shell processes input, int
 
 ***
 
-[![minishell demo](https://i.ytimg.com/vi/w-UHjiFiuXQ/hqdefault.jpg)](https://youtu.be/w-UHjiFiuXQ "minishell demo")
+[![minishell demo](https://res.cloudinary.com/marcomontalbano/image/upload/v1736769099/video_to_markdown/images/youtube--w-UHjiFiuXQ-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/w-UHjiFiuXQ "minishell demo")
 
 ## Features
 
